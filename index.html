@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+	<script src="node_modules/angular/angular.min.js"></script>
+	<script src="node_modules/angularjs-social-login/angularjs-social-login.js"></script>
+<body>
+
+<div ng-app="myApp" ng-controller="myCtrl">
+	<button g-login type="button">Google</button>
+	<button linked-in type="button">LinkedIn</button>
+	<button fb-login type="button">facebook</button>
+	<button ng-click="signout()" type="button">signout</button>
+	<h4>result: {{result}}</h4>
+</div>
+
+<script>
+var app = angular.module('myApp', ['socialLogin']);
+app.config(function(socialProvider){
+	socialProvider.setGoogleKey("GOOGLE_CLIENT_ID");
+    socialProvider.setLinkedInKey("LINKEDIN_CLIENT_ID");
+    socialProvider.setFbKey({appId: "FACEBOOK_APP_ID", apiVersion: "v2.4"});
+});
+
+app.controller('myCtrl', function($scope,socialLoginService) {
+    $scope.signout = function(){
+    	socialLoginService.logout();
+	}
+
+	$scope.$on('event:social-sign-in-success', (event, userDetails)=> {
+		$scope.result = userDetails;
+		$scope.$apply();
+	})
+
+	$scope.$on('event:social-sign-out-success', function(event, userDetails){
+		$scope.result = userDetails;
+	})
+   	
+});
+</script>
+
+</body>
+</html>
